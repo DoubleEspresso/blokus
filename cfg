@@ -1,0 +1,17 @@
+#
+#----------------------------------------------------------------------------------------
+#	THIS SETTINGS FILE WAS AUTO-GENERATED, ONLY EDIT IF YOU KNOW WHAT YOU ARE DOING!
+#  DATE CREATED: Thu Oct 16 20:25:53 CDT 2014
+#
+#  Restrictive Grid Battle Commander 1.0 (2014) 
+#  This application is covered under the GNU GPL v3.0.
+#  Author list: D.Passmore, M.Glatzmaier.
+#----------------------------------------------------------------------------------------
+#
+SYSTEM_OS: Windows 7
+CPU_CORES: 4
+USE_LOG: True
+AI_DIFFICULTY: Normal
+BOARD_SIZE_ROWS: 16
+BOARD_SIZE_COLS: 16
+BOARD_GEOMETRY: SQUARE
