@@ -16,8 +16,6 @@ public class Blokus {
 		// draw a simple GUI,
 		// TODO: move this to an intializer class.
 		
-		// comment to push
-		
 		MainPane twoFrame = new MainPane();
 		
 		Platform platform_info = new Platform();
