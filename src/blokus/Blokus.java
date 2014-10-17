@@ -16,7 +16,7 @@ public class Blokus {
 		// draw a simple GUI,
 		// TODO: move this to an intializer class.
 		
-		//GridFrame gp = new GridFrame();
+		// comment to push
 		
 		MainPane twoFrame = new MainPane();
 		
