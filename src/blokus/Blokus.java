@@ -2,12 +2,22 @@ package blokus;
 import java.util.Scanner;
 import blokus.Logger.LogType;
 
+
+
+// TODO: 
+// 1. validate the do_move methods for simple cases
+// 2. implement a point&click/select piece and place piece action
+//    for the main grid frame 
+// 3. add the simple 1-block piece to the grid-frame and make it click-able 
+// 4. legality checks for moves.
+
+
 public class Blokus {
 
 	private static boolean gameFinished = false;
 	private static String cmd="";
 
-
+	//Logger log = null; //new Logger(platform_info, version_info);
 	
 	// main entry point for the application
 	public static void main(String[] args) 

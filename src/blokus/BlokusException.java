@@ -11,6 +11,10 @@ public class BlokusException extends Exception {
 	public BlokusException(String message, Throwable cause) { super(message, cause); }
 	public BlokusException(Throwable cause) { super(cause); }
 
+	// exit codes for blokus
+	public static int OUT_OF_MEMORY = 1;
+	public static int ILLEGAL_MOVE  = 2;
+	public static int MUST_IMPLEMENT = 3;
 }
 
 
