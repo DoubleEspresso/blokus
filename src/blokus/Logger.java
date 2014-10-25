@@ -105,9 +105,9 @@ public class Logger
 		
 		switch (lt)
 		{
-		case NORMAL: data = "[NORMAL]("+theTime+")"+" :: ";
-		case CRITICAL: data = "[CRITICAL]("+theTime+")"+" :: ";
-		case ERROR: data = "[ERROR]("+theTime+")"+" :: ";
+		case NORMAL: data = "[NORMAL]("+theTime+")"+" :: "; break;
+		case CRITICAL: data = "[CRITICAL]("+theTime+")"+" :: "; break;
+		case ERROR: data = "[ERROR]("+theTime+")"+" :: "; break;
 		default:
 			break;
 		}

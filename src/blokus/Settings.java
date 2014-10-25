@@ -231,8 +231,8 @@ public class Settings {
 		settings_var_threads = Integer.toString(p.CPU_CORES);
 		settings_var_ai_strength ="Normal";
 		settings_var_use_log = "True";
-		settings_var_grid_size_x = "16";
-		settings_var_grid_size_y = "16";
+		settings_var_grid_size_x = "20";
+		settings_var_grid_size_y = "20";
 		settings_var_board_geometry = "SQUARE";
 
 		

@@ -1,8 +1,12 @@
 package blokus;
+import java.awt.EventQueue;
 import java.util.Scanner;
+
+import javafx.application.Application;
 import blokus.Logger.LogType;
-
-
+import blokus.Settings;
+import blokus.BlokusException;
+import graphics.BlokusWindow;
 
 // TODO: 
 // 1. validate the do_move methods for simple cases
@@ -22,27 +26,52 @@ public class Blokus {
 	// main entry point for the application
 	public static void main(String[] args) 
 	{
-		
-		// draw a simple GUI,
+
 		// TODO: move this to an intializer class.
-		
-		MainPane twoFrame = new MainPane();
-		
 		Platform platform_info = new Platform();
 		Version version_info = new Version();
-		Settings settings = new Settings(platform_info, version_info);
+		Logger log = null;
+		BlokusWindow MainWindow = null; 
 		
+		Settings settings = new Settings(platform_info,version_info);
 		
-		// some example log-writing...
-		Logger log = new Logger(platform_info, version_info);
+		String CPU_CORES    = settings.USER_SETTINGS.get("settings_var_threads");
+		String boardLength  = settings.USER_SETTINGS.get("settings_var_grid_size_x");
+		String boardHeight  = settings.USER_SETTINGS.get("settings_var_grid_size_y");
+		String useLog       = settings.USER_SETTINGS.get("settings_var_use_log");
+		String boardGeom    = settings.USER_SETTINGS.get("settings_var_board_geometry");
+		String aiStrength   = settings.USER_SETTINGS.get("settings_var_ai_strength");
+				
 		
-		log.write("1st Test message!",LogType.NORMAL);
-		log.write("2nd Test message!",LogType.NORMAL);
-		log.write("3rd Test message!",LogType.NORMAL);
+		log = new Logger(platform_info, version_info);
+		log.write("Using "+CPU_CORES+" cores",LogType.NORMAL);
+		log.write("Board geometry is "+boardGeom+" size "+boardLength + " by " + boardHeight + " squares.",LogType.NORMAL);
+		log.write("AI strength is " + aiStrength, LogType.NORMAL);
 		
+
 		
-		// example of dictionary settings access here...
-		System.out.println((String) settings.USER_SETTINGS.get("settings_var_threads"));
+		try
+		{
+			int bwidth = Integer.parseInt(boardLength);
+			int bheight = Integer.parseInt(boardHeight);
+			
+	        //EventQueue.invokeLater(new Runnable() {
+
+	           // @Override
+	            //public void run() {
+	            	//final BlokusWindow MainWindow = new BlokusWindow(bwidth, bheight);//, log);
+	            //}
+	        //});
+			MainWindow = new BlokusWindow(bwidth, bheight, log);
+			Board blokusBoard = new Board(bwidth, bheight, log);
+		}
+		catch (Exception any)
+		{
+			log.write("..[MAIN] Exception, failed to create board arrays!",LogType.ERROR);
+			System.exit(BlokusException.BLOKUS_IO_ERROR);
+		}
+		
+		log.write("Created main board.",LogType.NORMAL);
 		
 		
 		@SuppressWarnings("resource")
