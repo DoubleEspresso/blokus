@@ -31,10 +31,18 @@ public class Blokus implements Runnable{
 	private int mouseX,  mouseY, mouseDX , mouseDY ;
 	private Texture texture = null;
 	private Texture background = null;
-	private Boolean IsMouseDrag = false;
 	
-	// testing variables
-	private float square_angle;
+	// check which blok we are dragging
+	private Boolean dragging_b1 = false, dragging_b2 = false, dragging_b3 = false, dragging_b4 = false;
+	
+	// final mouse positions.
+	private int mf_b1X, mf_b1Y, mf_b2X, mf_b2Y, mf_b3X, mf_b3Y, mf_b4X, mf_b4Y; 
+	
+	// rotation angles
+	private float b1_theta, b2_theta, b3_theta, b4_theta;
+	
+	// flip booleans
+	private Boolean flip_b4 = false;
 	
     // error and event callback instances.
     //private GLFWErrorCallback errorCallback;
@@ -120,8 +128,20 @@ public class Blokus implements Runnable{
         glfwSetScrollCallback(window, scrollCallback = new GLFWScrollCallback() {
             @Override
             public void invoke(long window, double xoffset, double yoffset) {
-            	if (yoffset >= .1) square_angle += 90;
-            	else if (yoffset <= -.1) square_angle -= 90;
+            	if (yoffset >= .1) 
+            		{
+            		  if (dragging_b1) b1_theta += 90;
+            		  else if (dragging_b2) b2_theta += 90;
+            		  else if (dragging_b3) b3_theta += 90;
+            		  else if (dragging_b4) b4_theta += 90;            		  
+            		}
+            	else if (yoffset <= -.1)
+            	{
+          		  if (dragging_b1) b1_theta -= 90;
+          		  else if (dragging_b2) b2_theta -= 90;
+          		  else if (dragging_b3) b3_theta -= 90;
+          		  else if (dragging_b4) b4_theta -= 90;
+            	}
             }
         });
         
@@ -186,22 +206,27 @@ public class Blokus implements Runnable{
 		if(background == null) background = new Texture( new String("C:\\code\\blokus\\src\\graphics\\texture\\background5_scaled.jpg") ) ;
 		
 		// private variables init .. 
-		square_angle = 0;
+		b1_theta = b2_theta = b3_theta = b4_theta = 0;
 
+		// initial primitives positions
+		mf_b1X = 100; mf_b1Y = 250;
+		mf_b2X = 180; mf_b2Y = 250;
+		mf_b3X = 260; mf_b3Y = 250;
+		mf_b4X = 340; mf_b4Y = 250;
 	}
 	
 	private void keyEventsCallback(long window, int key, int scancode, int action, int mods)
 	{
 		// close window if user presses escape .. detected during game loop
         if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) glfwSetWindowShouldClose(window, GL_TRUE);       
-        else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) 
-        {
-        	square_angle += 45 % 360;
-        }
-        	else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-        {
-			square_angle -= 45 % 360;
-		}
+        //else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) 
+        //{
+        //	square_angle += 45 % 360;
+        //}
+        //	else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+        //{
+		//	square_angle -= 45 % 360;
+		//}
 	
 	}
 
@@ -217,8 +242,34 @@ public class Blokus implements Runnable{
 	// mouse callback
 	private void mouseCallback(long window, int button, int action, int mods)
 	{
+		if (action == GLFW_PRESS)
+		{
+			dragging_b1 = (Math.abs(mouseX - mf_b1X) <= 20 && Math.abs(mouseY - mf_b1Y) <= 20 );
+			dragging_b2 = (Math.abs(mouseX - mf_b2X) <= 20 && Math.abs(mouseY - mf_b2Y) <= 20 );
+			dragging_b3 = (Math.abs(mouseX - mf_b3X) <= 20 && Math.abs(mouseY - mf_b3Y) <= 20 );
+			dragging_b4 = (Math.abs(mouseX - mf_b4X) <= 20 && Math.abs(mouseY - mf_b4Y) <= 20 );
+			if (button == GLFW_MOUSE_BUTTON_RIGHT && dragging_b4) flip_b4 = !flip_b4;
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			if (dragging_b1)
+			{
+				dragging_b1 = false; mf_b1X = mouseX; mf_b1Y = mouseY;
+			}
+			else if (dragging_b2)
+			{
+				dragging_b2 = false; mf_b2X = mouseX; mf_b2Y = mouseY;
+			}
+			else if (dragging_b3)
+			{
+				dragging_b3 = false; mf_b3X = mouseX; mf_b3Y = mouseY;
+			}
+			else if (dragging_b4)
+			{
+				dragging_b4 = false; mf_b4X = mouseX; mf_b4Y = mouseY;
+			}
+		}
 		
-		IsMouseDrag = (action == GLFW_PRESS);
 		
 	}
 	
@@ -293,10 +344,10 @@ public class Blokus implements Runnable{
 	    // blok 1
 	    GL11.glLoadIdentity();	
 	    getDX(); getDY();
-	    if (IsMouseDrag) 
+	    if (dragging_b1) 
 	    	GL11.glTranslatef(mouseX + getDX(), mouseY + getDY(), 0.0f); // M1
-	    else GL11.glTranslatef(100, 250, 0.0f);
-	    GL11.glRotatef(square_angle, 0.0f, 0.0f, 1.0f); // M2	    	    
+	    else GL11.glTranslatef(mf_b1X, mf_b1Y, 0.0f);
+	    GL11.glRotatef(b1_theta, 0.0f, 0.0f, 1.0f); // M2	    	    
 	    // draw square about the origin - makes translation/rotation simpler.
 	    //glBindTexture(GL_TEXTURE_2D, texture.GetID());
 	    glBegin(GL_QUADS);
@@ -309,10 +360,10 @@ public class Blokus implements Runnable{
 	    // blok 2
 	    GL11.glLoadIdentity();	
 	    getDX(); getDY();
-	    if (IsMouseDrag) 
+	    if (dragging_b2) 
 	    	GL11.glTranslatef(mouseX + getDX(), mouseY + getDY(), 0.0f); // M1
-	    else GL11.glTranslatef(180, 250, 0.0f);
-	    GL11.glRotatef(square_angle, 0.0f, 0.0f, 1.0f); // M2	    	    
+	    else GL11.glTranslatef(mf_b2X, mf_b2Y, 0.0f);
+	    GL11.glRotatef(b2_theta, 0.0f, 0.0f, 1.0f); // M2	    	    
 	    // draw square about the origin - makes translation/rotation simpler.
 	    //glBindTexture(GL_TEXTURE_2D, texture.GetID());
 	    glBegin(GL_QUADS);
@@ -325,10 +376,10 @@ public class Blokus implements Runnable{
 	    // blok 3 - t-blok
 	    GL11.glLoadIdentity();	
 	    getDX(); getDY();
-	    if (IsMouseDrag) 
+	    if (dragging_b3)
 	    	GL11.glTranslatef(mouseX + getDX(), mouseY + getDY(), 0.0f); // M1
-	    else GL11.glTranslatef(260, 250, 0.0f);
-	    GL11.glRotatef(square_angle, 0.0f, 0.0f, 1.0f); // M2	    	    
+	    else GL11.glTranslatef(mf_b3X, mf_b3Y, 0.0f);
+	    GL11.glRotatef(b3_theta, 0.0f, 0.0f, 1.0f); // M2	    	    
 
 	    glBegin(GL_QUADS);
 	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,10,0);
@@ -343,29 +394,50 @@ public class Blokus implements Runnable{
 	    glEnd();
 	    
 	    // blok 4 - L-blok
-	    GL11.glLoadIdentity();	
-	    getDX(); getDY();
-	    if (IsMouseDrag) 
-	    	GL11.glTranslatef(mouseX + getDX(), mouseY + getDY(), 0.0f); // M1
-	    else GL11.glTranslatef(340, 250, 0.0f);
-	    GL11.glRotatef(square_angle, 0.0f, 0.0f, 1.0f); // M2	    	    
-
-	    glBegin(GL_QUADS);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(30,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(30,-10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,-10,0);
-	    
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,30,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-10,30,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-10,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,10,0);
-	    glEnd();
+	    gen_blok4(flip_b4);
 	    
 	    // step 3. finally swap buffers
         glfwSwapBuffers(window); 
 	}
 	
+	private void gen_blok4(Boolean flipped)
+	{		
+		GL11.glLoadIdentity();
+		getDX();
+		getDY();
+		if (dragging_b4) {
+			GL11.glTranslatef(mouseX + getDX(), mouseY + getDY(), 0.0f); // M1
+
+		} else
+			GL11.glTranslatef(mf_b4X, mf_b4Y, 0.0f);
+		GL11.glRotatef(b4_theta, 0.0f, 0.0f, 1.0f); // M2
+
+		if (!flipped) {
+			glBegin(GL_QUADS);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, -10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, -10, 0);
+
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 30, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-10, 30, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-10, 10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 10, 0);
+			glEnd();
+		} else {
+			glBegin(GL_QUADS);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, -10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, -10, 0);
+
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 30, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(10, 30, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(10, 10, 0);
+			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 10, 0);
+			glEnd();
+		}
+	}
 	
 	@Override
 	public void run() {
