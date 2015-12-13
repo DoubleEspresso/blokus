@@ -17,6 +17,7 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import com.sun.javafx.geom.Vec2d;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -197,13 +198,12 @@ public class Blokus implements Runnable{
 		
 		// default clear screen color is black
 		//GL11.glClearColor(0.4f, 0.4f, 0.4f, 0.1f); 
-		glClearColor(0.2f, 0.2f, 0.2f, .3f);
-		
+		//glClearColor(0.2f, 0.2f, 0.2f, .3f);
+		glClearColor(0.0f, 0.0f, 0.f, .0f);
 		// Sets the size of the OpenGL viewport
 		glViewport(0, 0, width, height);
 
-		if(texture == null) texture = new Texture( new String("C:\\code\\blokus\\src\\graphics\\texture\\tiles.png") ) ;
-		if(background == null) background = new Texture( new String("C:\\code\\blokus\\src\\graphics\\texture\\background5_scaled.jpg") ) ;
+		//if(background == null) background = new Texture( new String("C:\\code\\blokus\\src\\graphics\\texture\\background5_scaled.jpg") ) ;
 		
 		// private variables init .. 
 		b1_theta = b2_theta = b3_theta = b4_theta = 0;
@@ -219,14 +219,7 @@ public class Blokus implements Runnable{
 	{
 		// close window if user presses escape .. detected during game loop
         if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) glfwSetWindowShouldClose(window, GL_TRUE);       
-        //else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) 
-        //{
-        //	square_angle += 45 % 360;
-        //}
-        //	else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-        //{
-		//	square_angle -= 45 % 360;
-		//}
+
 	
 	}
 
@@ -305,23 +298,22 @@ public class Blokus implements Runnable{
 
 	    // step 1. clear framebuffer
 	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-	    
+
 	    // step 1.5 load background
 	    GL11.glLoadIdentity();
 	    GL11.glTranslatef(width/2, height/2, 0.0f);
-	    glColor3f(1.0f, 1.0f, 1.0f);
-	    glBindTexture(GL_TEXTURE_2D, background.GetID());
+	    glColor4f(.2f, .8f, .8f, 1f);
+	    //glBindTexture(GL_TEXTURE_2D, background.GetID());
 	    glBegin(GL_QUADS);
-	    glTexCoord2f (0, 0);
+	    //glTexCoord2f (0, 0); 
 	    glVertex3i(-width/2,height/2,0);
-	    glTexCoord2f (1, 0);
+	    //glTexCoord2f (1, 0); 
 	    glVertex3i(width/2,height/2,0);
-	    glTexCoord2f (1, 1);
+	    //glTexCoord2f (1, 1); 
 	    glVertex3i(width/2,-height/2,0);
-	    glTexCoord2f (0, 1);
+	    //glTexCoord2f (0, 1); 
 	    glVertex3i(-width/2,-height/2,0);
 	    glEnd();
-	    
 	    
 	    // step 2. test drawing simple primitives
 	    GL11.glLoadIdentity();	
@@ -329,13 +321,13 @@ public class Blokus implements Runnable{
 	    // step 3. draw board frame on the top of the background
 	    glBegin(GL_QUADS);
 	    //glTexCoord2f (0, 0);
-	    GL11.glColor4f(1,1,0,0.7f); glVertex3i(-14*10,14*10,0);
+	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(-14*10,14*10,0);
 	    //glTexCoord2f (1, 0);
-	    GL11.glColor4f(1,1,0,0.7f); glVertex3i(14*10,14*10,0);
+	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(14*10,14*10,0);
 	    //glTexCoord2f (1, 1);
-	    GL11.glColor4f(1,1,0,0.7f); glVertex3i(14*10,-14*10,0);
+	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(14*10,-14*10,0);
 	    //glTexCoord2f (0, 1);
-	    GL11.glColor4f(1,1,0,0.7f); glVertex3i(-14*10,-14*10,0);
+	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(-14*10,-14*10,0);
 	    glEnd();
 	    
 	    // example draw primitives (square + triangle) .. non-textured
@@ -351,10 +343,10 @@ public class Blokus implements Runnable{
 	    // draw square about the origin - makes translation/rotation simpler.
 	    //glBindTexture(GL_TEXTURE_2D, texture.GetID());
 	    glBegin(GL_QUADS);
-	    GL11.glColor4f(1,0,0,0.7f); glVertex3i(-10,10,0);
-	    GL11.glColor4f(1,0,0,0.7f); glVertex3i(10,10,0);
-	    GL11.glColor4f(1,0,0,0.7f); glVertex3i(10,-10,0);
-	    GL11.glColor4f(1,0,0,0.7f); glVertex3i(-10,-10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-10,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(10,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(10,-10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-10,-10,0);
 	    glEnd();
 	    
 	    // blok 2
@@ -367,11 +359,11 @@ public class Blokus implements Runnable{
 	    // draw square about the origin - makes translation/rotation simpler.
 	    //glBindTexture(GL_TEXTURE_2D, texture.GetID());
 	    glBegin(GL_QUADS);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-20,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(20,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(20,-10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-20,-10,0);
-	    glEnd();
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-20,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(20,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(20,-10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-20,-10,0);
+	    glEnd();    
 	    
 	    // blok 3 - t-blok
 	    GL11.glLoadIdentity();	
@@ -382,15 +374,15 @@ public class Blokus implements Runnable{
 	    GL11.glRotatef(b3_theta, 0.0f, 0.0f, 1.0f); // M2	    	    
 
 	    glBegin(GL_QUADS);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(30,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(30,-10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-30,-10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30,-10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30,-10,0);
 	    
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-10,30,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(10,30,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(10,10,0);
-	    GL11.glColor4f(0,1,0,0.7f); glVertex3i(-10,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-10,30,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(10,30,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(10,10,0);
+	    GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-10,10,0);
 	    glEnd();
 	    
 	    // blok 4 - L-blok
@@ -398,6 +390,62 @@ public class Blokus implements Runnable{
 	    
 	    // step 3. finally swap buffers
         glfwSwapBuffers(window); 
+	}
+	
+	// TODO: shorten this to one render function
+	private Vec2d[] rounded_corner(Vec2d center, float radius, int nb_points, int type)
+	{
+
+		float start_theta = 0; float end_theta = 90; //defaults
+		
+		switch (type) {
+		case 1: {
+			start_theta = 0; end_theta = 90; // 1st quadrant of a circle;
+			break;
+		}
+		case 2: {
+			start_theta = 90; end_theta = 180; // 2nd quadrant of a circle;
+			break;
+		}
+		case 3: {
+			start_theta = 180; end_theta = 270; // 3rd quadrant of a circle;
+			break;
+		}
+		case 4: {
+			start_theta = 270; end_theta = 360; // 4th quadrant of a circle;
+			break;
+		}
+		}
+		
+		float dtheta = (end_theta - start_theta) / nb_points;
+		Vec2d[] points = new Vec2d[nb_points+1];
+		points[0] = new Vec2d(center.x, center.y);
+		
+		
+		// compute the points, and return a list of them to openGL
+		for (int j = 1; j < nb_points+1; ++j) {
+			double theta = (start_theta + j * dtheta) * Math.PI / 180.0;
+			points[j] = new Vec2d(0,0);
+			points[j].x = (float) (center.x + radius * Math.cos(theta));
+			points[j].y = (float) (center.y + radius * Math.sin(theta));
+		}
+		
+		return points;
+	}
+	
+	private void render_rounded_corner(Vec2d center, float radius, int type)
+	{
+		int nb_points = 200; // default
+		Vec2d[] points = rounded_corner( center,  radius,  nb_points, type);
+		
+		// default color will be white (alpha = 0) ??
+		glBegin(GL_TRIANGLE_FAN);
+		for (int j = 0; j < nb_points; ++j) {
+
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3f((float)points[j].x, (float)points[j].y, 0f);
+
+		}
+		glEnd();
 	}
 	
 	private void gen_blok4(Boolean flipped)
@@ -414,27 +462,65 @@ public class Blokus implements Runnable{
 
 		if (!flipped) {
 			glBegin(GL_QUADS);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, -10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, -10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30, -10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30, -10, 0);
 
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 30, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-10, 30, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-10, 10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30, 30, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-10, 30, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-10, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30, 10, 0);
 			glEnd();
+			
+			// TODO : rounded corners + better coloring
+			
+			// draw border -- traces around the piece starting from top-bottom
+			// and moving counter-clockwise		
+			glLineWidth(6.0f);
+			glBegin(GL_LINES);
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30, -10+3, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30, 30-3, 0); 
+			
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30+3, -10, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30-3, -10, 0); 
+			
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30, 10-3, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30, -10+3, 0);
+						
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10+3, 10, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30-3, 10, 0);  
+			
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10, 10+3, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10, 30-3, 0);
+			
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10-3, 30, 0);
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30+3, 30, 0); 
+			glEnd();		
+			
+			// (testing) - rounded corner for this blok -- most of 
+			// the centers/radius combinations were found with a little trial and error .. 
+			// .. better method here (?)
+			float r = 6.0f;	    
+		    render_rounded_corner(new Vec2d(-30+r/2,-10+r/2), r , 3); 		        
+		    render_rounded_corner(new Vec2d(30-r/2,-10+r/2), r, 4);    
+		    render_rounded_corner(new Vec2d(30-r/2, 10-r/2), r , 1);     
+		    render_rounded_corner(new Vec2d(-10+r/2, 10+r/2), r , 3); 		    
+		    render_rounded_corner(new Vec2d(-30+r/2, 30-r/2), r , 2); 		    
+		    render_rounded_corner(new Vec2d(-10-r/2, 30-r/2), r , 1); 		
+			glLineWidth(1.0f);
+			
 		} else {
 			glBegin(GL_QUADS);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, 10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, -10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(-30, -10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30, -10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(-30, -10, 0);
 
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 30, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(10, 30, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(10, 10, 0);
-			GL11.glColor4f(0, 1, 0, 0.7f); glVertex3i(30, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30, 30, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(10, 30, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(10, 10, 0);
+			GL11.glColor4f(.9f,.4f,.4f,0.7f); glVertex3i(30, 10, 0);
 			glEnd();
 		}
 	}
