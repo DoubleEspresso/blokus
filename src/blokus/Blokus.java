@@ -315,20 +315,10 @@ public class Blokus implements Runnable{
 	    glVertex3i(-width/2,-height/2,0);
 	    glEnd();
 	    
-	    // step 2. test drawing simple primitives
+	    // step 2. draw board frame on the top of the background
 	    GL11.glLoadIdentity();	
-	    GL11.glTranslatef(width/2, height/2, 0.0f);
-	    // step 3. draw board frame on the top of the background
-	    glBegin(GL_QUADS);
-	    //glTexCoord2f (0, 0);
-	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(-14*10,14*10,0);
-	    //glTexCoord2f (1, 0);
-	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(14*10,14*10,0);
-	    //glTexCoord2f (1, 1);
-	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(14*10,-14*10,0);
-	    //glTexCoord2f (0, 1);
-	    GL11.glColor4f(0,1,0,0.2f); glVertex3i(-14*10,-14*10,0);
-	    glEnd();
+	    GL11.glTranslatef(width/2, height/2, 0.0f);	    
+	    render_board(14);
 	    
 	    // example draw primitives (square + triangle) .. non-textured
 	    // order of matrix multiplication .. M1 * M2 * ( object ) ...
@@ -386,7 +376,7 @@ public class Blokus implements Runnable{
 	    glEnd();
 	    
 	    // blok 4 - L-blok
-	    gen_blok4(flip_b4);
+	    render_blok4(flip_b4);
 	    
 	    // step 3. finally swap buffers
         glfwSwapBuffers(window); 
@@ -433,7 +423,7 @@ public class Blokus implements Runnable{
 		return points;
 	}
 	
-	private void render_rounded_corner(Vec2d center, float radius, int type)
+	private void render_rounded_corner(Vec2d center, float radius, int type, float alpha)
 	{
 		int nb_points = 200; // default
 		Vec2d[] points = rounded_corner( center,  radius,  nb_points, type);
@@ -442,13 +432,71 @@ public class Blokus implements Runnable{
 		glBegin(GL_TRIANGLE_FAN);
 		for (int j = 0; j < nb_points; ++j) {
 
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3f((float)points[j].x, (float)points[j].y, 0f);
+			GL11.glColor4f(1, 1, 1, alpha); glVertex3f((float)points[j].x, (float)points[j].y, 0f);
 
 		}
 		glEnd();
 	}
 	
-	private void gen_blok4(Boolean flipped)
+	private void render_board(int size)
+	{
+		float pen_thickness = 4.0f;
+		float delta = pen_thickness / 2.0f;
+		int bsize = 10;
+		
+		GL11.glLoadIdentity();
+		GL11.glTranslatef(width / 2, height / 2, 0.0f);
+		glBegin(GL_QUADS);
+		GL11.glColor4f(0, 1, 0, 0.2f); glVertex3i(-size * bsize, size * bsize, 0);
+		GL11.glColor4f(0, 1, 0, 0.2f); glVertex3i(size * bsize, size * bsize, 0);
+		GL11.glColor4f(0, 1, 0, 0.2f); glVertex3i(size * bsize, -size * bsize, 0);
+		GL11.glColor4f(0, 1, 0, 0.2f); glVertex3i(-size * bsize, -size * bsize, 0);
+		glEnd();
+		
+		// draw a white border around the main board	
+		glLineWidth(pen_thickness);
+		glBegin(GL_LINES);
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(-size * bsize+delta+2, size * bsize, 0); // the +3 is empirical (final board just looks better) .. ?
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(size * bsize, size * bsize, 0); 
+
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(-size * bsize+delta, size * bsize-delta, 0); 
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(-size * bsize+delta, -size * bsize+delta, 0);
+		
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(size * bsize+delta, size * bsize - delta, 0); 
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(size * bsize+delta, -size * bsize + delta, 0);	
+		
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(-size * bsize+delta+2, -size * bsize, 0); // the +3 is empirical (final board just looks better) .. ?
+		GL11.glColor4f(1, 1, 1, .8f); glVertex3f(size * bsize, -size * bsize, 0); 
+		glEnd();							
+		
+		
+		// (testing) - rounded corners for the board
+		// the centers/radius combinations were found with a little trial and error .. 
+		float r = pen_thickness;
+		render_rounded_corner(new Vec2d(-size * bsize + r , size * bsize - r/2), r, 2, 0.8f);
+		render_rounded_corner(new Vec2d(size * bsize, -size * bsize + r/2), r, 4, 0.8f);
+		render_rounded_corner(new Vec2d(size * bsize, size * bsize - r/2), r, 1, 0.8f);
+		render_rounded_corner(new Vec2d(-size * bsize + r , -size * bsize + r/2), r, 3, 0.8f);
+		glLineWidth(1.0f);
+		
+		
+		// draw the board grid lines
+		glLineWidth(2.0f);
+		glBegin(GL_LINES);
+		for(int h = 1; h<size; ++h)
+		{
+			// horizontal lines
+			GL11.glColor4f(.7f, .1f, .1f, .4f); glVertex3f(-size * bsize+delta+2, (size * bsize - 2*bsize * h), 0); 
+			GL11.glColor4f(.7f, .1f, .1f, .4f); glVertex3f(size * bsize , (size * bsize - 2*bsize * h), 0); 
+			
+			// vertical lines
+			GL11.glColor4f(.7f, .1f, .1f, .4f); glVertex3f(size * bsize-2*bsize*h, size * bsize-delta, 0); 
+			GL11.glColor4f(.7f, .1f, .1f, .4f); glVertex3f(size * bsize-2*bsize*h, -size * bsize+delta, 0);
+		}
+		glEnd();
+	}
+	
+	private void render_blok4(Boolean flipped)
 	{		
 		GL11.glLoadIdentity();
 		getDX();
@@ -477,37 +525,37 @@ public class Blokus implements Runnable{
 			
 			// draw border -- traces around the piece starting from top-bottom
 			// and moving counter-clockwise		
-			glLineWidth(6.0f);
+			glLineWidth(4.0f);
 			glBegin(GL_LINES);
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30, -10+3, 0); 
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30, 30-3, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30, -10+2, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30, 30-2, 0); 
 			
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30+3, -10, 0); 
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30-3, -10, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30+2, -10, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30-2, -10, 0); 
 			
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30, 10-3, 0); 
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30, -10+3, 0);
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30, 10-2, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30, -10+2, 0);
 						
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10+3, 10, 0); 
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30-3, 10, 0);  
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10+2, 10, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(30-2, 10, 0);  
 			
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10, 10+3, 0); 
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10, 30-3, 0);
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10, 10+2, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10, 30-2, 0);
 			
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10-3, 30, 0);
-			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30+3, 30, 0); 
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-10-2, 30, 0);
+			GL11.glColor4f(1, 1, 1, 1.0f); glVertex3i(-30+2, 30, 0); 
 			glEnd();		
 			
 			// (testing) - rounded corner for this blok -- most of 
 			// the centers/radius combinations were found with a little trial and error .. 
 			// .. better method here (?)
-			float r = 6.0f;	    
-		    render_rounded_corner(new Vec2d(-30+r/2,-10+r/2), r , 3); 		        
-		    render_rounded_corner(new Vec2d(30-r/2,-10+r/2), r, 4);    
-		    render_rounded_corner(new Vec2d(30-r/2, 10-r/2), r , 1);     
-		    render_rounded_corner(new Vec2d(-10+r/2, 10+r/2), r , 3); 		    
-		    render_rounded_corner(new Vec2d(-30+r/2, 30-r/2), r , 2); 		    
-		    render_rounded_corner(new Vec2d(-10-r/2, 30-r/2), r , 1); 		
+			float r = 4.0f;	    
+		    render_rounded_corner(new Vec2d(-30+r/2,-10+r/2), r , 3, 1f); 		        
+		    render_rounded_corner(new Vec2d(30-r/2,-10+r/2), r, 4, 1f);    
+		    render_rounded_corner(new Vec2d(30-r/2, 10-r/2), r , 1, 1f);     
+		    render_rounded_corner(new Vec2d(-10+r/2, 10+r/2), r , 3, 1f); 		    
+		    render_rounded_corner(new Vec2d(-30+r/2, 30-r/2), r , 2, 1f); 		    
+		    render_rounded_corner(new Vec2d(-10-r/2, 30-r/2), r , 1, 1f); 		
 			glLineWidth(1.0f);
 			
 		} else {
